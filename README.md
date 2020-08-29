@@ -1,4 +1,5 @@
 # Cheer-Up-server
+
 Cheer-Up 프로젝트에 오신 것을 환영합니다!
 
 # Version
@@ -14,3 +15,4 @@ Cheer-Up 프로젝트에 오신 것을 환영합니다!
  9. 
  10. typescript 4.0.2
  11. tslint-config-prettier 1.18.0
+]

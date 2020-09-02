@@ -6,6 +6,7 @@ const app = express();
 
 const port = process.env.PORT || 5000;
 
+
 const user = require("./routers/auth/user");
 
 app.use(express.json());
@@ -17,6 +18,7 @@ app.use("/user", user);
 
 
 app.set('jwt-secret', process.env.SECRET)
+
 
 app.listen(port, ()=> {
     console.log(

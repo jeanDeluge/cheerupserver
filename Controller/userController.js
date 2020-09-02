@@ -28,6 +28,7 @@ module.exports={
             console.log(e)
             response.status(403).json("회원가입 실패")
         }
+
     },
     login: async(request, response)=>{
         const {userId, userPassword} = request.body;
@@ -98,5 +99,6 @@ module.exports={
                 response.status(400).end()
             }
         })
+
     }
 }

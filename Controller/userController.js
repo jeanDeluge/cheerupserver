@@ -1,20 +1,21 @@
 const {User} = require("../models");
 const jwt = require("jsonwebtoken");
-const { resolve } = require("path");
-const { rejects } = require("assert");
+const crypto = require("crypto");
+
 
 module.exports={
     join: async(request, response) => {
 
         const { userId, userPassword, userName, birthday, sex, interest} = request.body;
-  
+        const encrypted = crypto.createHash('sha256').update(userPassword).digest('hex')
+
         try {
             const [user, create] = await User.findOrCreate({
                 where:{
                     userId
                 },
                 defaults:{
-                    userPassword,
+                    userPassword: encrypted,
                     userName,
                     birthday,
                     sex,
@@ -23,15 +24,19 @@ module.exports={
             });
             // const data = user;
             // console.log(data)
-            response.status(200).json("회원가입완료")
+            if(!create){
+                response.status(403).json({messasge: "회원이 이미 있음"})
+            }else{
+                response.status(200).json("회원가입완료")
+            }
         }catch(e){
-            console.log(e)
-            response.status(403).json("회원가입 실패")
+            response.status(409).json("회원가입 실패")
         }
     },
     login: async(request, response)=>{
         const {userId, userPassword} = request.body;
         const secret = request.app.get('jwt-secret')
+        const newPassword = crypto.createHash('sha256').update(userPassword).digest('hex')
         try{
         //check user infor, generate jwt
         
@@ -42,7 +47,7 @@ module.exports={
                 }
             }).then(user=>{
                 if(!user){
-                    throw new Error("user does not exist")
+                    response.status(403).json("user does not exist")
                 }else{
                     const token= jwt.sign({
                         _id: userId,
@@ -72,7 +77,7 @@ module.exports={
         const token = request.headers['x-access-token'] || request.headers.token
         let verify = jwt.verify(token, process.env.SECRET);
         verify = verify._id;
-        console.log(verify)
+
 
         if(verify){
             User.findOne({
@@ -81,7 +86,9 @@ module.exports={
                 }
             }
 
-            )
+            ).then(result =>{
+                response.status(200).json('유효함')
+            })
         }else{
             response.status(401).json('need user session')
         }

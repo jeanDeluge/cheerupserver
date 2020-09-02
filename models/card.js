@@ -8,11 +8,9 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Card.belongsToMany(models.User, {
-        foreignKey: "cardId",
-        through: "userCard",
-        as: "Cars",
-        onDelete: "CASCADE",
+      Card.belongsTo(models.User, {
+        foreignKey: "user_Id",
+        as: "User",
       });
     }
   }
@@ -23,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
       cheered: DataTypes.INTEGER,
       done: DataTypes.BOOLEAN,
       DLC: DataTypes.STRING,
+      user_Id: DataTypes.INTEGER,
     },
     {
       sequelize,

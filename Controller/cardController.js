@@ -3,18 +3,13 @@ const { request } = require("http");
 
 module.exports = {
   //userId와 같은 id의 카드가 없으면 만든다.
-  create: (request, response) => {
-    const { userId } = request.body;
+  create: async (request, response) => {
+    const { user_Id, text } = request.body;
     try {
-      Card.findOrCreate({
+      const card = await Card.findOrCreate({
         where: {
-          userId: userId,
-        },
-        include: {
-          model: User,
-          as: "user",
-          attributes: ["userName"],
-          required: true,
+          user_Id: user_Id,
+          text: text,
         },
       });
       response.status(200).json("카드생성완료");
@@ -24,21 +19,23 @@ module.exports = {
     }
   },
   //userId와 같은 id의 card를 모두 가져온다.
-  get: (request, response) => {
-    const { userId } = request.body;
+  get: async (request, response) => {
+    const { user_Id } = request.body;
     try {
-      Card.findAll({
-        include: {
-          model: User,
-          as: "user",
-          attributes: ["userName"],
-        },
+      const card = await Card.findAll({
+        // include: {
+        //   model: User,
+        //   as: "user",
+        //   attributes: ["userName"],
+        // },
         where: {
-          userId: userId,
+          user_Id: user_Id,
         },
 
         order: [["createdAt", "DESC"]],
       });
+      const data = card;
+      console.log(data);
       response.status(200).json("카드정보읽기완료");
     } catch (e) {
       console.log(e);

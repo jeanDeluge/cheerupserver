@@ -1,8 +1,4 @@
 # Cheer-Up-server
-<<<<<<< HEAD
-=======
-
->>>>>>> 2cc789fe31b0a9b0c2cc46f8e455e7f299d3f49d
 Cheer-Up 프로젝트에 오신 것을 환영합니다!
 
 # Version

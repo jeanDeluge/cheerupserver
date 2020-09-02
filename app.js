@@ -4,7 +4,8 @@ const session = require('express-session');
 const bodyParser = require('body-parser');
 const app = express();
 
-const port = process.env.PORT
+const port = process.env.PORT || 5000;
+
 
 const user = require("./routers/auth/user");
 
@@ -16,7 +17,8 @@ app.use(cors());
 app.use("/user", user);
 
 
-//app.set('jwt-secret', config.secret)
+app.set('jwt-secret', process.env.SECRET)
+
 
 app.listen(port, ()=> {
     console.log(

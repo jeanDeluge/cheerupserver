@@ -32,6 +32,7 @@ module.exports={
         }catch(e){
             response.status(409).json("회원가입 실패")
         }
+
     },
     login: async(request, response)=>{
         const {userId, userPassword} = request.body;
@@ -105,5 +106,6 @@ module.exports={
                 response.status(400).end()
             }
         })
+
     }
 }

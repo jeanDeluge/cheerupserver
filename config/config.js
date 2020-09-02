@@ -1,16 +1,16 @@
 module.exports = {
   development: {
-    username: "admin",
-    password: process.env.CHEERUPDBPASSWORD,
-    database: "cheerup_database",
-    host: "cheerupdatabase.cx7gp3irwp5f.ap-northeast-2.rds.amazonaws.com",
+    username: "root",
+    password: "Qkwldrk4424!@",
+    database: "database_test",
+    host: "127.0.0.1",
     dialect: "mysql",
   },
   test: {
-    username: "root",
-    password: "abcde",
+    username: "admin",
+    password: process.env.CHEERUPDBPASSWORD,
     database: "database_test",
-    host: "127.0.0.1",
+    host: "cheerupdatabase.cx7gp3irwp5f.ap-northeast-2.rds.amazonaws.com",
     dialect: "mysql",
   },
   production: {

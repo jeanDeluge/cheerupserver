@@ -2,12 +2,13 @@ const {User} = require("../models");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 
+
 module.exports={
     join: async(request, response) => {
 
         const { userId, userPassword, userName, birthday, sex, interest} = request.body;
-
         const encrypted = crypto.createHash('sha256').update(userPassword).digest('hex')
+
         try {
             const [user, create] = await User.findOrCreate({
                 where:{
@@ -36,22 +37,18 @@ module.exports={
     login: async(request, response)=>{
         const {userId, userPassword} = request.body;
         const secret = request.app.get('jwt-secret')
-
         const newPassword = crypto.createHash('sha256').update(userPassword).digest('hex')
-
         try{
         //check user infor, generate jwt
         
             const user = await User.findOne({
                 where: {
                     userId,
-                    newPassword
+                    userPassword
                 }
             }).then(user=>{
                 if(!user){
-
                     response.status(403).json("user does not exist")
-
                 }else{
                     const token= jwt.sign({
                         _id: userId,
@@ -90,12 +87,9 @@ module.exports={
                 }
             }
 
-
             ).then(result =>{
                 response.status(200).json('유효함')
             })
-
-
         }else{
             response.status(401).json('need user session')
         }

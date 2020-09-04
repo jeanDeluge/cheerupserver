@@ -1,41 +1,46 @@
 const { User, Card } = require("../models");
 const { request } = require("http");
+const jwt = require("jsonwebtoken");
+const user = require("../models/user");
+const dotenv = require("dotenv");
+dotenv.config();
 
 module.exports = {
   //userId와 같은 id의 카드가 없으면 만든다.
   create: async (request, response) => {
-    const { user_Id, text } = request.body;
+    const token = request.headers.authorization;
+    const { text } = request.body;
     try {
-      const card = await Card.findOrCreate({
-        include: {
-          model: User,
-          as: "User",
-          attributes: ["userName"],
-        },
-        where: {
-          user_Id: user_Id,
-          text: text,
-        },
+      const verify = jwt.verify(token, process.env.SECRET);
+      const { _id } = verify;
+      const user = await User.findOne({
+        where: { userId: _id },
+      });
+      const card = await Card.create({
+        user_Id: user.dataValues.id,
+        text: text,
       }).then((result) => {
+        console.log("then", result.dataValues);
         response.status(200).json(result);
       });
-    } catch (e) {
-      console.log(e);
+    } catch (error) {
+      console.log(error);
       response.status(403).json("카드생성실패");
     }
   },
   //userId와 같은 id의 card를 모두 가져온다.
   get: async (request, response) => {
-    const { user_Id } = request.body;
+    const token = request.headers.authorization;
     try {
+      const verify = jwt.verify(token, process.env.SECRET);
+      const { _id } = verify;
+
+      const user = await User.findOne({
+        where: { userId: _id },
+      });
       const card = await Card.findAll({
-        include: {
-          model: User,
-          as: "User",
-          attributes: ["userName"],
-        },
         where: {
-          user_Id: user_Id,
+          user_Id: user.dataValues.id,
         },
 
         order: [["createdAt", "DESC"]],
@@ -48,37 +53,49 @@ module.exports = {
     }
   },
   update: async (request, response) => {
-    const { user_Id, text, id } = request.body;
-    console.log(request.body.dataValues);
+    const token = request.headers.authorization;
+    const { text, id } = request.body;
+    console.log("body", request.body);
     try {
+      const verify = jwt.verify(token, process.env.SECRET);
+      const { _id } = verify;
+
+      const user = await User.findOne({
+        where: { userId: _id },
+      });
+      // console.log("user", user);
       const card = await Card.findOne({
         where: {
-          user_Id: user_Id,
+          user_Id: user.dataValues.id,
           id: id,
         },
       }).then((result) => {
         if (result) {
-          // console.log("what is result?", result);
           result.update({
             text: text,
           });
           console.log(result);
-          response.status(200).json({ result });
-        } else {
-          response.status(401).json("fail");
+          response.status(200).json(result);
         }
+        //***혹시 잘못된 요청이 구체적으로 생각 날 경우 response내용 추가.
       });
-    } catch (e) {
-      console.log(e);
+    } catch (error) {
+      console.log(error);
       response.status(404).json("wrong req");
     }
   },
   delete: async (request, response) => {
-    const { user_Id, id } = request.body;
+    const token = request.headers.authorization;
+    const { id } = request.body;
     try {
+      const verify = jwt.verify(token, process.env.SECRET);
+      const { _id } = verify;
+
+      const user = await User.findOne({
+        where: { userId: _id },
+      });
       const card = await Card.destroy({
         where: {
-          user_Id: user_Id,
           id: id,
         },
       }).then((result) => {
@@ -87,6 +104,18 @@ module.exports = {
       });
     } catch (error) {
       console.log(error);
+    }
+  },
+  getAll: async (request, response) => {
+    try {
+      const card = await Card.findAll({
+        order: [["createdAt", "DESC"]],
+      }).then((result) => {
+        response.status(200).json(result);
+      });
+    } catch (e) {
+      console.log(e);
+      response.status(403).json("카드정보를 가져올 수 없습니다");
     }
   },
 };

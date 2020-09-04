@@ -2,6 +2,8 @@ const { User } = require("../models");
 const jwt = require("jsonwebtoken");
 const { resolve } = require("path");
 const { rejects } = require("assert");
+const dotenv = require("dotenv");
+dotenv.config();
 
 module.exports = {
   join: async (request, response) => {
@@ -56,7 +58,7 @@ module.exports = {
                 _id: userId,
               },
               secret,
-              { expiresIn: "30m" }
+              { expiresIn: "300m" }
             );
 
             return token;
@@ -78,7 +80,10 @@ module.exports = {
   },
   check: (request, response) => {
     try {
-      const token = request.headers["x-access-token"] || request.headers.token;
+      const token =
+        request.headers["x-access-token"] ||
+        request.headers.token ||
+        request.headers.authorization;
       let verify = jwt.verify(token, process.env.SECRET);
       verify = verify._id;
       console.log(verify);

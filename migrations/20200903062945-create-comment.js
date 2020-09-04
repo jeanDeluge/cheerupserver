@@ -1,7 +1,7 @@
 "use strict";
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable("Cards", {
+    await queryInterface.createTable("Comments", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -11,19 +11,12 @@ module.exports = {
       text: {
         type: Sequelize.STRING,
       },
-      tags: {
-        type: Sequelize.STRING,
-      },
-      cheered: {
+      card_id: {
         type: Sequelize.INTEGER,
+        references: { model: "Cards", key: "id" },
+        onDelete: "CASCADE",
       },
-      done: {
-        type: Sequelize.BOOLEAN,
-      },
-      DLC: {
-        type: Sequelize.STRING,
-      },
-      user_Id: {
+      user_id: {
         type: Sequelize.INTEGER,
         references: { model: "Users", key: "id" },
         onDelete: "CASCADE",
@@ -39,6 +32,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("Cards");
+    await queryInterface.dropTable("Comments");
   },
 };

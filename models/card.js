@@ -12,6 +12,11 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "user_Id",
         as: "User",
       });
+      Card.hasMany(models.Comment, {
+        foreignKey: "card_id",
+        as: "Comment",
+        onDelete: "CASCADE",
+      });
     }
   }
   Card.init(
@@ -21,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
       cheered: DataTypes.INTEGER,
       done: DataTypes.BOOLEAN,
       DLC: DataTypes.STRING,
-      user_Id: DataTypes.INTEGER,
+      user_Id: DataTypes.INTEGER, //foregin-key
     },
     {
       sequelize,

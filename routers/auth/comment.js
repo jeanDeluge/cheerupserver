@@ -6,6 +6,8 @@ router.post("/create", commentController.create);
 
 router.get("/get", commentController.get);
 
+router.get("/getCheer", commentController.getCheer);
+
 router.post("/update", commentController.update);
 
 router.post("/delete", commentController.delete);

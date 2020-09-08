@@ -1,10 +1,16 @@
-const { User, Card, Comment } = require("../models");
+const { User, Card, Comment, sequelize } = require("../models");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
-const { request, response } = require("express");
+const { request, response, text } = require("express");
+const Sequelize = require("sequelize");
+const { group } = require("console");
+const Op = Sequelize.Op;
+
 dotenv.config();
 
 module.exports = {
+  //header로 전달받은 user정보로 userTable의 user정보를 찾고,
+  //그 user의 정보를 comment 테이블에 넣고, comment를 만든다.
   create: async (request, response) => {
     const { text, id } = request.body;
     const token = request.headers.authorization;
@@ -31,8 +37,9 @@ module.exports = {
       response.send(404).json("wrong request");
     }
   },
+
   get: async (request, response) => {
-    const { id } = request.body;
+    const query = request.query;
     const token = request.headers.authorization;
     try {
       const verify = jwt.verify(token, process.env.SECRET);
@@ -42,8 +49,13 @@ module.exports = {
       });
       const comment = await Comment.findAll({
         where: {
-          user_id: user.dataValues.id,
-          card_id: id,
+          card_id: query.id,
+        },
+        include: {
+          model: User,
+          as: "User",
+          attributes: ["userName"],
+          require: true,
         },
         order: [["updatedAt", "DESC"]],
       }).then((result) => {
@@ -58,13 +70,13 @@ module.exports = {
     }
   },
   update: async (request, response) => {
-    const { card_id, id, text } = request.body;
+    const { card_id, comment_id, text } = request.body;
     //cardid&commentid를 받아서, text를 update
     try {
       const comment = await Comment.findOne({
         where: {
           card_id: card_id,
-          id: id,
+          id: comment_id,
         },
       }).then((result) => {
         if (result) {
@@ -81,12 +93,12 @@ module.exports = {
     }
   },
   delete: async (request, response) => {
-    const { card_id, id } = request.body;
+    const { card_id, comment_id } = request.body;
     try {
       const comment = await Comment.destroy({
         where: {
           card_id: card_id,
-          id: id,
+          id: comment_id,
         },
       }).then((result) => {
         console.log(result);
@@ -97,9 +109,48 @@ module.exports = {
       response.status(404).json("삭제실패?");
     }
   },
+  getCheer: async (request, response) => {
+    const token = request.headers.authorization;
+
+    try {
+      const verify = jwt.verify(token, process.env.SECRET);
+      const { _id } = verify;
+
+      const user = await User.findOne({
+        where: { userId: _id },
+      });
+
+      const comment = await Comment.findAll({
+        where: {
+          user_id: user.dataValues.id,
+        },
+        attributes: ["user_id", "card_id"],
+        // raw: true,
+        include: [
+          {
+            model: Card,
+            as: "Card",
+            attributes: ["id", "text"],
+          },
+          {
+            model: User,
+            as: "User",
+            through: { attributes: ["user_id"] },
+          },
+        ],
+
+        group: ["card_id"],
+      }).then((result) => {
+        response.status(200).json(result);
+      });
+    } catch (error) {
+      console.log("err", error);
+    }
+  },
 };
 
 //Create
 //Read
+
 //Update
 //Delete

@@ -19,6 +19,7 @@ module.exports = (sequelize, DataTypes) => {
         as: "VerifyingToken",
         sourceKey: "id"
       })
+
     }
   }
   User.init(
@@ -33,6 +34,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       age: DataTypes.INTEGER,
       gender: DataTypes.STRING,
+
       interest: DataTypes.STRING,
     },
     {

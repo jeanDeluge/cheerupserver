@@ -1,3 +1,4 @@
+
 const {User} = require("../models");
 const {VerifyingToken} = require("../models");
 const jwt = require("jsonwebtoken");
@@ -24,13 +25,23 @@ module.exports={
     
     join: async(request, response) => {
         const { userId, userPassword, userName, age, gender, interest} = request.body;
+
         const encrypted = crypto.createHash('sha256').update(userPassword).digest('hex')
+
+
         try {
             const tokenForSignUp = jwt.sign({
                 _id : userId
             },process.env.SECRET,
             {expiresIn:'24h'})
-            
+
+
+            const [token, isCreatedToken] = await VerifyingToken.findOrCreate({
+                where: {
+                    userId,
+                    token : tokenForSignUp
+                }
+            })
             const [user, create] = await User.findOrCreate({
                 where:{
                     userId
@@ -38,6 +49,7 @@ module.exports={
                 defaults:{
                     userPassword: encrypted,
                     userName,
+
                     age,
                     gender,
                     interest
@@ -52,15 +64,19 @@ module.exports={
             // const data = user;   
             // console.log(data)
             const host = "http://localhost:5000"
+
             let messageWithToken = {
                 from: 'sirblaue@naver.com',
                 to: userId,
                 subject: "이메일인증요청메일입니다.",
+
                 html: ""+`<div><a href ="${host}+"/confirmEmail/"+${tokenForSignUp}" ></a> <div>`
+
             }
             //
             //http://localhost:5000/asdjfoaidjfadf
             //클라이언트 쪽에서 토큰을 header저장 
+
             if(!create){
                 response.status(403).json({messasge: "회원이 이미 있음"})
             }else if(isCreatedToken){
@@ -68,6 +84,7 @@ module.exports={
                 response.status(200).json({message: "mail send  mail 인증부탁드립니다."})
             }else{
                 response.status(400).json({messgae: '인증안됨'})
+]
             }
         }catch(e){
             response.status(409).json("회원가입 실패")
@@ -84,11 +101,13 @@ module.exports={
                 })
             })
         }
+
     },
     login: async(request, response)=>{
         const {userId, userPassword} = request.body;
         const secret = request.app.get('jwt-secret')
         const cryptedPassword = crypto.createHash('sha256').update(userPassword).digest('hex')
+
         try{
         //check user infor, generate jwt
             const user = await User.findOne({

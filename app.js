@@ -17,7 +17,7 @@ app.use(cors());
 
 app.use("/user", user);
 app.use("/card", card);
-//app.use("/auth", mailing)
+
 
 app.use("/comment", comment);
 

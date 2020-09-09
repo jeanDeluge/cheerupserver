@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       VerifyingToken.belongsTo(models.User,{
+
         foreignKey: "user_Id",
         as: "User",
         targetKey: "id"
@@ -21,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
   VerifyingToken.init({
     token: DataTypes.STRING,
     user_Id: DataTypes.INTEGER
+
   }, {
     sequelize,
     modelName: 'VerifyingToken',

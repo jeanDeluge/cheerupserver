@@ -6,6 +6,7 @@ const nodemailer = require('nodemailer')
 module.exports = {
     
     sendingJoinMail: (request, response)=>{
+
         try {
             const mailConfig = { 
                 service : 'Naver',
@@ -14,7 +15,9 @@ module.exports = {
                 auth:{
                     user:'sirblaue@naver.com',
                     pass: process.env.PASSWORD
+
                 }   
+
             }
             
             let message = {

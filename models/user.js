@@ -12,7 +12,13 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "user_Id",
         as: "Card",
         onDelete: "CASCADE",
+        sourceKey: 'id',
       });
+      User.hasOne(models.VerifyingToken, {
+        foreignKey: "userId",
+        as: "VerifyingToken",
+        sourceKey: "id"
+      })
     }
   }
   User.init(
@@ -20,6 +26,10 @@ module.exports = (sequelize, DataTypes) => {
       userId: DataTypes.STRING,
       userPassword: DataTypes.STRING,
       userName: DataTypes.STRING,
+      verified : {
+        type : DataTypes.BOOLEAN,
+        defaultValue: false
+      },
       birthday: DataTypes.DATEONLY,
       sex: DataTypes.STRING,
       interest: DataTypes.STRING,

@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
       Card.belongsTo(models.User, {
         foreignKey: "user_Id",
         as: "User",
+        targetKey: "id"
       });
     }
   }

@@ -7,10 +7,10 @@ module.exports = {
     dialect: "mysql",
   },
   test: {
-    username: "admin",
-    password: process.env.CHEERUPDBPASSWORD,
+    username: "root",
+    password: "abcde",
     database: "database_test",
-    host: "cheerupdatabase.cx7gp3irwp5f.ap-northeast-2.rds.amazonaws.com",
+    host: "127.0.0.1",
     dialect: "mysql",
   },
   production: {

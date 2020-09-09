@@ -4,27 +4,28 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
 const verifyingtoken = require("../models/verifyingtoken");
-const { response } = require("express");
+const { response, request } = require("express");
+
+function sendJoinMail(mailMessageWithToken){
+    const mailConfig = {
+        service : 'Naver',
+        host : 'smtp.naver.com',
+        port : 587,
+        auth:{
+            user: 'sirblaue@naver.com',
+            pass: process.env.PASSWORD
+        }
+    }
+
+    let transporter = nodemailer.createTransport(mailConfig)
+    transporter.sendMail(mailMessageWithToken)
+}
 
 module.exports={
-    sendJoinMail: function(mailMessageWithToken){
-        const mailConfig = {
-            service : 'Naver',
-            host : 'smtp.naver.com',
-            port : 587,
-            auth:{
-                user: 'sirblaue@naver.com',
-                pass: process.env.PASSWORD
-            }
-        }
-
-        let transporter = nodemailer.createTransport(mailConfig)
-        transporter.sendMail(mailMessageWithToken)
-    }
-    ,
+   
     join: async(request, response) => {
 
-        const { userId, userPassword, userName, birthday, sex, interest} = request.body;
+        const { userId, userPassword, userName, age, gender, interest} = request.body;
         const encrypted = crypto.createHash('sha256').update(userPassword).digest('hex')
 
         try {
@@ -33,12 +34,6 @@ module.exports={
             },process.env.SECRET,
             {expiresIn:'24h'})
 
-            const [token, isCreatedToken] = await VerifyingToken.findOrCreate({
-                where: {
-                    userId,
-                    token : tokenForSignUp
-                }
-            })
             const [user, create] = await User.findOrCreate({
                 where:{
                     userId
@@ -46,12 +41,18 @@ module.exports={
                 defaults:{
                     userPassword: encrypted,
                     userName,
-                    birthday,
-                    verified,
-                    sex,
+                    age,
+                    verified: false,
+                    gender,
                     interest
                 }
             });
+            const [token, isCreatedToken] = await VerifyingToken.findOrCreate({
+                where: {
+                    user_Id: user.dataValues.id,
+                    token : tokenForSignUp
+                }
+            })
             // const data = user;   
             // console.log(data)
         
@@ -72,7 +73,7 @@ module.exports={
             if(!create){
                 response.status(403).json({messasge: "회원이 이미 있음"})
             }else if(isCreatedToken){
-                this.sendJoinMail(messageWithToken);
+                sendJoinMail(messageWithToken);
                 response.status(200).json({message: "mail send"})
             }
             else{
@@ -126,6 +127,7 @@ module.exports={
                 response.status(200).json({
                     messasge: "logged in successfully",
                     token
+                    //여기에 token과 유저 젠더, 인터레스트, 나이 보내기
                 })
             })
         }catch(error){
@@ -169,6 +171,9 @@ module.exports={
                 response.status(400).end()
             }
         })
+퇴
+    },
+    joinOut: async (request, response)=>{
 
     }
 }

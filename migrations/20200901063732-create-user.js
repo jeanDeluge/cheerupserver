@@ -21,10 +21,10 @@ module.exports = {
         type: Sequelize.BOOLEAN,
         defalutValue: false
       },
-      birthday: {
-        type: Sequelize.DATE,
+      age: {
+        type: Sequelize.INTEGER,
       },
-      sex: {
+      gender: {
         type: Sequelize.STRING,
       },
       interest: {

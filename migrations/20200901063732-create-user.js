@@ -17,16 +17,26 @@ module.exports = {
       userName: {
         type: Sequelize.STRING,
 
+
       },
       verified: {
         type: Sequelize.BOOLEAN,
         defalutValue: false
 
       },
-      birthday: {
-        type: Sequelize.DATE,
+      verified: {
+        type: Sequelize.BOOLEAN,
+        defalutValue: false
+
       },
-      sex: {
+      verified: {
+        type: Sequelize.BOOLEAN,
+        defalutValue: false
+      },
+      age: {
+        type: Sequelize.INTEGER,
+      },
+      gender: {
         type: Sequelize.STRING,
       },
       interest: {

@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
         sourceKey: 'id',
       });
       User.hasOne(models.VerifyingToken, {
-        foreignKey: "userId",
+        foreignKey: "user_Id",
         as: "VerifyingToken",
         sourceKey: "id"
       })
@@ -29,11 +29,12 @@ module.exports = (sequelize, DataTypes) => {
       userName: DataTypes.STRING,
       verified : {
         type : DataTypes.BOOLEAN,
-        defaultValue: false
+        defaultValue: false,
+        allowNull: false
       },
+      age: DataTypes.INTEGER,
+      gender: DataTypes.STRING,
 
-      birthday: DataTypes.DATEONLY,
-      sex: DataTypes.STRING,
       interest: DataTypes.STRING,
     },
     {

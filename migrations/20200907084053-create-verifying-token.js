@@ -11,8 +11,12 @@ module.exports = {
       token: {
         type: Sequelize.STRING
       },
-      userId: {
-        type: Sequelize.INTEGER
+      user_Id: {
+        type: Sequelize.INTEGER,
+        references: { model: "Users", key: "id" },
+        onDelete: "CASCADE",
+        allowNull: false,
+
       },
       createdAt: {
         allowNull: false,

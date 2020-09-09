@@ -108,6 +108,7 @@ module.exports = {
       const card = await Card.destroy({
         where: {
           id: id,
+          user_Id: user.dataValues.id,
         },
       }).then((result) => {
         console.log(result);
@@ -162,8 +163,47 @@ module.exports = {
             ],
           },
         ],
+        //카드의 아이디가 로그인한 유저의 아이디와  동일해야된다.
         where: {
           user_Id: user.dataValues.id,
+          id: query.id,
+        },
+      }).then((result) => {
+        response.status(200).json(result);
+      });
+    } catch (error) {
+      console.log("err", error);
+    }
+  },
+  getOtherUrl: async (request, response) => {
+    const token = request.headers.authorization;
+    const query = request.query;
+    try {
+      const verify = jwt.verify(token, process.env.SECRET);
+      const { _id } = verify;
+
+      const user = await User.findOne({
+        where: { userId: _id },
+      });
+
+      const card = await Card.findAll({
+        //raw: true,
+        include: [
+          {
+            model: Comment,
+            as: "Comment",
+            attributes: ["id", "text", "user_id"],
+            include: [
+              {
+                model: User,
+                as: "User",
+                attributes: ["userName"],
+              },
+            ],
+          },
+        ],
+        //카드의 아이디가 로그인한 유저의 아이디와  동일해야된다.
+        where: {
           id: query.id,
         },
       }).then((result) => {

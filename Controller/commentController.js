@@ -94,6 +94,7 @@ module.exports = {
   },
   delete: async (request, response) => {
     const { card_id, comment_id } = request.body;
+
     try {
       const comment = await Comment.destroy({
         where: {

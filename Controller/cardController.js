@@ -1,3 +1,4 @@
+
 const { User, Card, Comment } = require("../models");
 const { request } = require("http");
 const jwt = require("jsonwebtoken");
@@ -49,6 +50,7 @@ module.exports = {
           user_Id: user.dataValues.id,
         },
         //정렬 : 생성날짜 가장최근날짜가 가장 위로 나오게
+
         order: [["createdAt", "DESC"]],
       }).then((result) => {
         response.status(200).json(result);
@@ -58,6 +60,7 @@ module.exports = {
       response.status(403).json("카드정보를 가져올 수 없습니다");
     }
   },
+
   //로그인 한 유저정보, post요청 text 를  request.body로 받아옴.
   update: async (request, response) => {
     const token = request.headers.authorization;
@@ -105,6 +108,7 @@ module.exports = {
       });
       const card = await Card.destroy({
         where: {
+
           id: id,
         },
       }).then((result) => {
@@ -115,6 +119,7 @@ module.exports = {
       console.log(error);
     }
   },
+
   //모든 카드를 메인페이지에 렌더하기 위한 getAll
   getAll: async (request, response) => {
     try {

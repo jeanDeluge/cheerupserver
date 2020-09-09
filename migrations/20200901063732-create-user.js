@@ -16,6 +16,12 @@ module.exports = {
       },
       userName: {
         type: Sequelize.STRING,
+
+      },
+      verified: {
+        type: Sequelize.BOOLEAN,
+        defalutValue: false
+
       },
       birthday: {
         type: Sequelize.DATE,

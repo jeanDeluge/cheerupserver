@@ -12,18 +12,26 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "user_Id",
         as: "Card",
         onDelete: "CASCADE",
+        sourceKey: 'id',
       });
-      User.hasMany(models.Comment, {
-        foreignKey: "user_id",
-        as: "Comment",
-      });
+      User.hasOne(models.VerifyingToken, {
+        foreignKey: "userId",
+        as: "VerifyingToken",
+        sourceKey: "id"
+      })
+
     }
   }
   User.init(
     {
-      userId: DataTypes.STRING, //email
+      userId: DataTypes.STRING,
       userPassword: DataTypes.STRING,
       userName: DataTypes.STRING,
+      verified : {
+        type : DataTypes.BOOLEAN,
+        defaultValue: false
+      },
+
       birthday: DataTypes.DATEONLY,
       sex: DataTypes.STRING,
       interest: DataTypes.STRING,

@@ -52,12 +52,12 @@ module.exports={
             })
             // const data = user;   
             // console.log(data)
-            const host = "http://localhost:5000"
+            const host = request.headers.host
             let messageWithToken = {
                 from: 'sirblaue@naver.com',
                 to: userId,
                 subject: "이메일인증요청메일입니다.",
-                html: ""+`<div><a href ="${host}+"/confirmEmail/"+${tokenForSignUp}" ></a> <div>`
+                html: ""+`<div><h1>안녕하세요<h1><a href ="http://${host}/confirmEmail/${tokenForSignUp}" ><p>클릭하시면 이메일 인증 페이지로 이동합니다.</p></a> <div>`
             }
             //
             //http://localhost:5000/asdjfoaidjfadf

@@ -23,10 +23,14 @@ module.exports = {
         defalutValue: false
 
       },
-      birthday: {
-        type: Sequelize.DATE,
+      verified: {
+        type: Sequelize.BOOLEAN,
+        defalutValue: false
       },
-      sex: {
+      age: {
+        type: Sequelize.INTEGER,
+      },
+      gender: {
         type: Sequelize.STRING,
       },
       interest: {

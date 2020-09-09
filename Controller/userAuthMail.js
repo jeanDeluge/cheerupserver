@@ -1,7 +1,11 @@
 const nodemailer = require('nodemailer')
+
+//인증을 위한 토큰 생성하기
+//이메일을 입력하고, 
+
 module.exports = {
     
-    join: (request, response)=>{
+    sendingJoinMail: (request, response)=>{
         try {
             const mailConfig = { 
                 service : 'Naver',
@@ -10,7 +14,7 @@ module.exports = {
                 auth:{
                     user:'sirblaue@naver.com',
                     pass: process.env.PASSWORD
-                }
+                }   
             }
             
             let message = {

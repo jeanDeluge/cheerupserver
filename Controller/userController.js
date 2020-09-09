@@ -1,3 +1,4 @@
+
 const {User} = require("../models");
 const {VerifyingToken} = require("../models");
 const jwt = require("jsonwebtoken");
@@ -27,6 +28,7 @@ module.exports={
         const { userId, userPassword, userName, birthday, sex, interest} = request.body;
         const encrypted = crypto.createHash('sha256').update(userPassword).digest('hex')
 
+
         try {
             const tokenForSignUp = jwt.sign({
                 _id : userId
@@ -54,6 +56,7 @@ module.exports={
             });
             // const data = user;   
             // console.log(data)
+
         
 
             const host = "http://localhost:5000"
@@ -81,6 +84,7 @@ module.exports={
         }catch(e){
             response.status(409).json("회원가입 실패")
             console.log(e)
+
         }
 
     },confirmMail:(request, response)=>{
@@ -100,6 +104,7 @@ module.exports={
         const {userId, userPassword} = request.body;
         const secret = request.app.get('jwt-secret')
         const cryptedPassword = crypto.createHash('sha256').update(userPassword).digest('hex')
+
         try{
         //check user infor, generate jwt
         
@@ -112,6 +117,7 @@ module.exports={
             }).then(user=>{
                 if(!user){
                     response.status(403).json("user does not exist")
+
                 }else{
                     const token= jwt.sign({
                         _id: userId,
@@ -143,16 +149,31 @@ module.exports={
         verify = verify._id;
 
 
-        if(verify){
-            User.findOne({
-                where:{
-                    userId:verify
-                }
-            }
+      const user = await User.findOne({
+        where: {
+          userId,
+          userPassword,
+        },
+      })
+        .then((user) => {
+          if (!user) {
+            throw new Error("user does not exist");
+          } else {
+            const token = jwt.sign(
+              {
+                _id: userId,
+              },
+              secret,
+              { expiresIn: "300m" }
+            );
+
+
 
             ).then(result =>{
                 response.status(200).json('유효함')
             })
+
+
         }else{
             response.status(401).json('need user session')
         }
@@ -168,7 +189,53 @@ module.exports={
             }else{
                 response.status(400).end()
             }
-        })
 
+        })
+        .then((token) => {
+          response.status(200).json({
+            messasge: "logged in successfully",
+            token,
+          });
+        });
+    } catch (error) {
+      console.log(error);
+      response.status(403).json({
+        messasge: error.messasge,
+        error: "logged in failed",
+      });
     }
-}
+  },
+  check: (request, response) => {
+    try {
+      const token =
+        request.headers["x-access-token"] ||
+        request.headers.token ||
+        request.headers.authorization;
+      let verify = jwt.verify(token, process.env.SECRET);
+      verify = verify._id;
+      console.log(verify);
+
+      if (verify) {
+        User.findOne({
+          where: {
+            userId: verify,
+          },
+        });
+      } else {
+        response.status(401).json("need user session");
+      }
+    } catch (error) {
+      response.status(401).json("유효하지 않은 사용자");
+    }
+  },
+  logout: async (request, response) => {
+    request.session.destroy((err) => {
+      if (!err) {
+        response.clearCookie("user");
+        response.status(302).redirect("/");
+      } else {
+        response.status(400).end();
+      }
+    });
+  },
+};

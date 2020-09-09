@@ -18,9 +18,7 @@ app.use(cors());
 app.use("/user", user);
 app.use("/card", card);
 
-
 app.use("/comment", comment);
-
 
 app.set("jwt-secret", process.env.SECRET);
 

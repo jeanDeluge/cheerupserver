@@ -1,4 +1,3 @@
-
 const { User, Card, Comment } = require("../models");
 const { request } = require("http");
 const jwt = require("jsonwebtoken");
@@ -108,7 +107,6 @@ module.exports = {
       });
       const card = await Card.destroy({
         where: {
-
           id: id,
         },
       }).then((result) => {
@@ -149,7 +147,7 @@ module.exports = {
       });
 
       const card = await Card.findAll({
-        raw: true,
+        //raw: true,
         include: [
           {
             model: Comment,

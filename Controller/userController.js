@@ -3,9 +3,6 @@ const {VerifyingToken} = require("../models");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
-const verifyingtoken = require("../models/verifyingtoken");
-const { response } = require("express");
-const { resolveSoa } = require("dns");
 
 function sendJoinMail(mailMessageWithToken){
     const mailConfig = {
@@ -68,7 +65,7 @@ module.exports={
                 sendJoinMail(messageWithToken);
                 response.status(200).json({
                     message: "mail send  mail 인증부탁드립니다.",
-                     token : token.dataValues.token
+                     token : token.dataValues.token //이건 배포시 삭제해야함.
                  })
             }else{
                 response.status(400).json({messgae: '인증안됨'})

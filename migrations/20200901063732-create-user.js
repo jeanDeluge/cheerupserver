@@ -24,6 +24,7 @@ module.exports = {
         defalutValue: false
 
       },
+
       verified: {
         type: Sequelize.BOOLEAN,
         defalutValue: false

@@ -1,8 +1,7 @@
 "use strict";
-
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable("Cards", {
+    await queryInterface.createTable("Comments", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -12,41 +11,29 @@ module.exports = {
       text: {
         type: Sequelize.STRING,
       },
-      tags: {
-        type: Sequelize.STRING,
-      },
-      cheered: {
+      card_id: {
         type: Sequelize.INTEGER,
-        defaultValue: 0,
+        references: { model: "Cards", key: "id" },
+        onDelete: "CASCADE",
       },
-      done: {
-        type: Sequelize.BOOLEAN,
-      },
-      DLC: {
-        type: Sequelize.STRING,
-      },
-      D_day: {
-        type: Sequelize.DATEONLY,
-      },
-      user_Id: {
+      user_id: {
         type: Sequelize.INTEGER,
         references: { model: "Users", key: "id" },
         onDelete: "CASCADE",
-        allowNull: false,
       },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
+        defaultValue: Sequelize.NOW,
       },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
+        defaultValue: Sequelize.NOW,
       },
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("Cards");
+    await queryInterface.dropTable("Comments");
   },
 };

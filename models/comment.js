@@ -1,30 +1,34 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class VerifyingToken extends Model {
+  class Comment extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
-      VerifyingToken.belongsTo(models.User, {
-        foreignKey: "user_Id",
+      Comment.belongsTo(models.Card, {
+        foreignKey: "card_id",
+        as: "Card",
+      });
+      Comment.belongsTo(models.User, {
+        foreignKey: "user_id",
         as: "User",
-        targetKey: "id",
+        onDelete: "CASCADE",
       });
     }
   }
-  VerifyingToken.init(
+  Comment.init(
     {
-      token: DataTypes.STRING,
-      user_Id: DataTypes.INTEGER,
+      text: DataTypes.STRING,
+      card_id: DataTypes.INTEGER,
+      user_id: DataTypes.INTEGER,
     },
     {
       sequelize,
-      modelName: "VerifyingToken",
+      modelName: "Comment",
     }
   );
-  return VerifyingToken;
+  return Comment;
 };

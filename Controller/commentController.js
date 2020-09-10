@@ -93,9 +93,13 @@ module.exports = {
     }
   },
   delete: async (request, response) => {
+    const query = request.query;
     const { card_id, comment_id } = request.body;
 
     try {
+      const user = await User.findOne({
+        where: { userId: _id },
+      });
       const comment = await Comment.destroy({
         where: {
           card_id: card_id,

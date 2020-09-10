@@ -9,7 +9,7 @@ module.exports = {
   //header에 담긴 유저정보를 해독 후, 그 유저정보와 일치하는 카드 생성.
   create: async (request, response) => {
     const token = request.headers.authorization;
-    const { text } = request.body;
+    const { text, D_day } = request.body;
     try {
       //token에 담긴 유저정보를 해독.
       const verify = jwt.verify(token, process.env.SECRET);
@@ -22,6 +22,7 @@ module.exports = {
       const card = await Card.create({
         user_Id: user.dataValues.id,
         text: text,
+        D_day: D_day,
       }).then((result) => {
         console.log("then", result.dataValues);
         response.status(200).json(result);
@@ -105,6 +106,7 @@ module.exports = {
       const user = await User.findOne({
         where: { userId: _id },
       });
+
       const card = await Card.destroy({
         where: {
           id: id,
@@ -200,6 +202,11 @@ module.exports = {
                 attributes: ["userName"],
               },
             ],
+          },
+          {
+            model: User,
+            as: "User",
+            attributes: ["id"],
           },
         ],
         //카드의 아이디가 로그인한 유저의 아이디와  동일해야된다.

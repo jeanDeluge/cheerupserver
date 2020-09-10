@@ -8,7 +8,6 @@ const crypto = require('crypto');
 //인증을 위한 토큰 생성하기
 //이메일을 입력하고, 
 
-
 function sendPasswordResetMail(mailOptions){
     const mailConfig = {
         service : 'Naver',
@@ -34,6 +33,7 @@ module.exports = {
             if(emailaddress === ''){
                 response.status(400).json("이메일을 입력해주세요.")
                
+
 
             }
 

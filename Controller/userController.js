@@ -19,6 +19,7 @@ function sendJoinMail(mailMessageWithToken){
 }
 
 
+
 module.exports={
     
     join: async(request, response) => {
@@ -61,10 +62,12 @@ module.exports={
 
             const host = request.headers.host
 
+
             let messageWithToken = {
                 from: 'sirblaue@naver.com',
                 to: userId,
                 subject: "이메일인증요청메일입니다.",
+
                 html: ""+`<div><h1>안녕하세요<h1><a href ="http://${host}/confirmEmail/${tokenForSignUp}" ><p>클릭하시면 이메일 인증 페이지로 이동합니다.</p></a> <div>`
 
             }
@@ -77,12 +80,14 @@ module.exports={
             }else if(isCreatedToken){
                 sendJoinMail(messageWithToken);
 
+
                 response.status(200).json({
                     message: "mail send  mail 인증부탁드립니다.",
                      token : token.dataValues.token //이건 배포시 삭제해야함.
                  })
             }else{
                 response.status(400).json({messgae: '인증안됨'})
+
 
             }
         }catch(e){
@@ -98,6 +103,7 @@ module.exports={
 
             const tokenInDB = await VerifyingToken.findOne({
                 where:{ token: tokenSent }
+
             })
             
             if(!tokenInDB){
@@ -149,6 +155,7 @@ module.exports={
                     userPassword : cryptedPassword
                 }
 
+
             })
             if(user.dataValues.verified === false){
                 response.status(400).json('이메일 인증하세요')
@@ -164,11 +171,14 @@ module.exports={
                 {expiresIn:'30m'}
                 )
 
+
                 response.status(200).json({
                     token,
                     age : user.dataValues.age,
                     gender : user.dataValues.gender,
-                    interest: user.dataValues.interest
+                    interest: user.dataValues.interest,
+                    id : user.dataValues.id
+              
                 })
             }
         
@@ -209,6 +219,7 @@ module.exports={
                 response.status(400).end()
             }
         })
+
     },
     info: (request, response) => {
         const { age, gender, interest } = request.body;

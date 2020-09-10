@@ -7,4 +7,6 @@ const mail = require("./auth/mail");
 router.use("/user", user);
 router.use("/user", userController.check);
 
+router.use("/mail", mail);
+
 module.exports = router;

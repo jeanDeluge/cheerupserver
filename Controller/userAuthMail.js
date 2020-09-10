@@ -23,6 +23,21 @@ function sendPasswordResetMail(mailOptions){
     transporter.sendMail(mailOptions)
 }
 
+function sendPasswordResetMail(mailOptions){
+    const mailConfig = {
+        service : 'Naver',
+        host : 'smtp.naver.com',
+        port : 587,
+        auth:{
+            user: 'sirblaue@naver.com',
+            pass: process.env.PASSWORD
+        }
+    }
+
+    let transporter = nodemailer.createTransport(mailConfig)
+    transporter.sendMail(mailOptions)
+}
+
 module.exports = {
     
     sendResetmessage : async (request, response)=>{

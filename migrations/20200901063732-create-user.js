@@ -16,22 +16,18 @@ module.exports = {
       },
       userName: {
         type: Sequelize.STRING,
-
-
       },
       verified: {
         type: Sequelize.BOOLEAN,
-        defalutValue: false
-
+        defalutValue: false,
       },
       verified: {
         type: Sequelize.BOOLEAN,
-        defalutValue: false
-
+        defalutValue: false,
       },
       verified: {
         type: Sequelize.BOOLEAN,
-        defalutValue: false
+        defalutValue: false,
       },
       age: {
         type: Sequelize.INTEGER,

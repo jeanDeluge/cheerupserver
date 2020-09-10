@@ -1,12 +1,16 @@
+<<<<<<< HEAD
+const nodemailer = require("nodemailer");
+=======
 const nodemailer = require('nodemailer')
 const { User } = require('../models')
 const { VerifyingToken } = require('../models')
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 
+>>>>>>> e47d518c159ec7f6191953ac1665d99fe97c68d3
 
 //인증을 위한 토큰 생성하기
-//이메일을 입력하고, 
+//이메일을 입력하고,
 
 function sendPasswordResetMail(mailOptions){
     const mailConfig = {
@@ -24,6 +28,35 @@ function sendPasswordResetMail(mailOptions){
 }
 
 module.exports = {
+<<<<<<< HEAD
+  sendingJoinMail: (request, response) => {
+    try {
+      const mailConfig = {
+        service: "Naver",
+        host: "smtp.naver.com",
+        port: 587,
+        auth: {
+          user: "sirblaue@naver.com",
+          pass: process.env.PASSWORD,
+        },
+      };
+
+      let message = {
+        from: "sirblaue@naver.com",
+        to: "aria2527@gmail.com",
+        subject: "이메일 인증 요청 메일입니다.",
+        html: "<p> token 검증 URL 넣기 </p>",
+      };
+
+      let transporter = nodemailer.createTransport(mailConfig);
+      transporter.sendMail(message);
+      response.status(200).json("성공!");
+    } catch (error) {
+      response.status(400).json("false");
+    }
+  },
+};
+=======
     
     sendResetmessage : async (request, response)=>{
         const emailaddress = request.body.email;
@@ -125,3 +158,4 @@ module.exports = {
 
     
 }
+>>>>>>> e47d518c159ec7f6191953ac1665d99fe97c68d3

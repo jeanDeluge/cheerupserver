@@ -10,6 +10,7 @@ const crypto = require('crypto');
 
 function sendPasswordResetMail(mailOptions){
     const mailConfig = {
+
         service : 'Daum',
         host : 'smtp.daum.net',
         port : 465,
@@ -42,8 +43,9 @@ module.exports = {
             const token = jwt.sign({
                 id : emailaddress
             },process.env.SECRET,
-           // {expiresIn: '7d'}
+            {expiresIn: '7d'}
             ) // **배포시느에ㅡ안전을 위해 한시간으로 설정함
+
     
             const tokenEncrypted = crypto.createHash('sha256').update(token).digest('hex');
             
@@ -62,10 +64,12 @@ module.exports = {
                 const host = request.headers.host;
 
                 let messageWithToken = {
+
                     from : process.env.EMAIL,
                     to: emailaddress,
                     subject : "비밀번호 변경을 위한 인증요청 메일입니다.",
                     html : ""+`<div><h1>안녕하세요<h1><a href="http://${host}/resetPassword/${tokenEncrypted}"><p>클릭하시면 비밀번호 변경페이지로 이동합니다. </p></a><div>`
+
                  }
                 sendPasswordResetMail(messageWithToken);
                 response.status(200).json({

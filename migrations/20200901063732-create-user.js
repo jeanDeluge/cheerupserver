@@ -19,7 +19,7 @@ module.exports = {
       },
       verified: {
         type: Sequelize.BOOLEAN,
-        defalutValue: false
+        defalutValue: false,
       },
       age: {
         type: Sequelize.INTEGER,

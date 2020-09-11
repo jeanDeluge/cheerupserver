@@ -11,14 +11,12 @@ module.exports = (sequelize, DataTypes) => {
       Card.belongsTo(models.User, {
         foreignKey: "user_Id",
         as: "User",
-        targetKey: "id"
-
+        targetKey: "id",
       });
       Card.hasMany(models.Comment, {
         foreignKey: "card_id",
         as: "Comment",
         onDelete: "CASCADE",
-
       });
     }
   }

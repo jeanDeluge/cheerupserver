@@ -1,4 +1,5 @@
 "use strict";
+
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable("Cards", {
@@ -16,12 +17,16 @@ module.exports = {
       },
       cheered: {
         type: Sequelize.INTEGER,
+        defaultValue: 0,
       },
       done: {
         type: Sequelize.BOOLEAN,
       },
       DLC: {
         type: Sequelize.STRING,
+      },
+      D_day: {
+        type: Sequelize.DATEONLY,
       },
       user_Id: {
         type: Sequelize.INTEGER,
@@ -32,10 +37,12 @@ module.exports = {
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
+        defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
       },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
+        defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
       },
     });
   },

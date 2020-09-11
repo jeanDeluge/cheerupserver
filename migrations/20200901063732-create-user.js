@@ -16,18 +16,6 @@ module.exports = {
       },
       userName: {
         type: Sequelize.STRING,
-
-
-      },
-      verified: {
-        type: Sequelize.BOOLEAN,
-        defalutValue: false
-
-      },
-      verified: {
-        type: Sequelize.BOOLEAN,
-        defalutValue: false
-
       },
       verified: {
         type: Sequelize.BOOLEAN,

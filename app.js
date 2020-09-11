@@ -23,9 +23,7 @@ app.use("/mail", mail)
 //app.use("/auth", mailing)
 
 
-
 app.use("/comment", comment);
-
 
 app.set("jwt-secret", process.env.SECRET);
 

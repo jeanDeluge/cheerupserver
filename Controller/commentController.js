@@ -93,8 +93,13 @@ module.exports = {
     }
   },
   delete: async (request, response) => {
+    const query = request.query;
     const { card_id, comment_id } = request.body;
+
     try {
+      const user = await User.findOne({
+        where: { userId: _id },
+      });
       const comment = await Comment.destroy({
         where: {
           card_id: card_id,
@@ -119,28 +124,29 @@ module.exports = {
       const user = await User.findOne({
         where: { userId: _id },
       });
-
+      console.log(_id);
       const comment = await Comment.findAll({
         where: {
           user_id: user.dataValues.id,
         },
+
         attributes: ["user_id", "card_id"],
-        // raw: true,
+        //raw: true,
         include: [
           {
             model: Card,
             as: "Card",
             attributes: ["id", "text"],
           },
-          {
-            model: User,
-            as: "User",
-            through: { attributes: ["user_id"] },
-          },
+          // {
+          //   model: User,
+          //   as: "User",
+          //   attributes: ["user_id"],
+          // },
         ],
-
         group: ["card_id"],
       }).then((result) => {
+        console.log(result);
         response.status(200).json(result);
       });
     } catch (error) {

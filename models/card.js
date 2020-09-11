@@ -27,6 +27,7 @@ module.exports = (sequelize, DataTypes) => {
       cheered: DataTypes.INTEGER,
       done: DataTypes.BOOLEAN,
       DLC: DataTypes.STRING,
+      D_day: DataTypes.DATEONLY,
       user_Id: DataTypes.INTEGER,
     },
     {

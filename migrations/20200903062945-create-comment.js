@@ -12,11 +12,13 @@ module.exports = {
         type: Sequelize.STRING,
       },
       card_id: {
+        allowNull: false,
         type: Sequelize.INTEGER,
         references: { model: "Cards", key: "id" },
         onDelete: "CASCADE",
       },
       user_id: {
+        allowNull: false,
         type: Sequelize.INTEGER,
         references: { model: "Users", key: "id" },
         onDelete: "CASCADE",

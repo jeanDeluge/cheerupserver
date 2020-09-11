@@ -14,11 +14,13 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: "CASCADE",
         sourceKey: "id",
       });
+   
       User.hasOne(models.VerifyingToken, {
         foreignKey: "user_Id",
         as: "VerifyingToken",
         sourceKey: "id",
       });
+
     }
   }
   User.init(

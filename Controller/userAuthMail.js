@@ -1,62 +1,29 @@
-<<<<<<< HEAD
-const nodemailer = require("nodemailer");
-=======
 const nodemailer = require('nodemailer')
 const { User } = require('../models')
 const { VerifyingToken } = require('../models')
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 
->>>>>>> e47d518c159ec7f6191953ac1665d99fe97c68d3
 
 //인증을 위한 토큰 생성하기
 //이메일을 입력하고,
 
 function sendPasswordResetMail(mailOptions){
     const mailConfig = {
-        service : 'Naver',
-        host : 'smtp.naver.com',
-        port : 587,
+
+        service : 'Daum',
+        host : 'smtp.daum.net',
+        port : 465,
         auth:{
-            user: 'sirblaue@naver.com',
+            user: process.env.EMAIL,
             pass: process.env.PASSWORD
         }
     }
-
     let transporter = nodemailer.createTransport(mailConfig)
     transporter.sendMail(mailOptions)
 }
 
 module.exports = {
-<<<<<<< HEAD
-  sendingJoinMail: (request, response) => {
-    try {
-      const mailConfig = {
-        service: "Naver",
-        host: "smtp.naver.com",
-        port: 587,
-        auth: {
-          user: "sirblaue@naver.com",
-          pass: process.env.PASSWORD,
-        },
-      };
-
-      let message = {
-        from: "sirblaue@naver.com",
-        to: "aria2527@gmail.com",
-        subject: "이메일 인증 요청 메일입니다.",
-        html: "<p> token 검증 URL 넣기 </p>",
-      };
-
-      let transporter = nodemailer.createTransport(mailConfig);
-      transporter.sendMail(message);
-      response.status(200).json("성공!");
-    } catch (error) {
-      response.status(400).json("false");
-    }
-  },
-};
-=======
     
     sendResetmessage : async (request, response)=>{
         const emailaddress = request.body.email;
@@ -76,8 +43,9 @@ module.exports = {
             const token = jwt.sign({
                 id : emailaddress
             },process.env.SECRET,
-            {expiresIn: '1h'}
-            ) // 안전을 위해 한시간으로 설정함
+            {expiresIn: '7d'}
+            ) // **배포시느에ㅡ안전을 위해 한시간으로 설정함
+
     
             const tokenEncrypted = crypto.createHash('sha256').update(token).digest('hex');
             
@@ -96,10 +64,12 @@ module.exports = {
                 const host = request.headers.host;
 
                 let messageWithToken = {
-                    from : "sirblaue@naver.com",
+
+                    from : process.env.EMAIL,
                     to: emailaddress,
                     subject : "비밀번호 변경을 위한 인증요청 메일입니다.",
-                    html : ""+`<div><h1>안녕하세요<h1><a herf="http://${host}/resetPassword/${tokenEncrypted}"><p>클릭하시면 비밀번호 변경페이지로 이동합니다. </p></a><div>`
+                    html : ""+`<div><h1>안녕하세요<h1><a href="http://${host}/resetPassword/${tokenEncrypted}"><p>클릭하시면 비밀번호 변경페이지로 이동합니다. </p></a><div>`
+
                  }
                 sendPasswordResetMail(messageWithToken);
                 response.status(200).json({
@@ -158,4 +128,3 @@ module.exports = {
 
     
 }
->>>>>>> e47d518c159ec7f6191953ac1665d99fe97c68d3

@@ -21,14 +21,6 @@ module.exports = {
         type: Sequelize.BOOLEAN,
         defalutValue: false,
       },
-      verified: {
-        type: Sequelize.BOOLEAN,
-        defalutValue: false,
-      },
-      verified: {
-        type: Sequelize.BOOLEAN,
-        defalutValue: false,
-      },
       age: {
         type: Sequelize.INTEGER,
       },

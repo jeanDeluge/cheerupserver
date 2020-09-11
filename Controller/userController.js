@@ -4,20 +4,20 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
 
-function sendJoinMail(mailMessageWithToken){
+
+function sendJoinMail(mailOptions){
     const mailConfig = {
-        service : 'Naver',
-        host : 'smtp.naver.com',
-        port : 587,
+        service : 'Daum',
+        host : 'smtp.daum.net',
+        port : 465,
         auth:{
-            user: 'sirblaue@naver.com',
+            user: process.env.EMAIL,
             pass: process.env.PASSWORD
         }
     }
     let transporter = nodemailer.createTransport(mailConfig)
-    transporter.sendMail(mailMessageWithToken)
+    transporter.sendMail(mailOptions)
 }
-
 
 
 module.exports={
@@ -27,14 +27,9 @@ module.exports={
         try {
             const tokenForSignUp = jwt.sign({
                 _id : userId
-            },process.env.SECRET,
-            {expiresIn:'24h'})
-            const [token, isCreatedToken] = await VerifyingToken.findOrCreate({
-                where: {
-                    userId,
-                    token : tokenForSignUp
-                }
-            })
+            },process.env.SECRET/* ,
+            {expiresIn:'24h'} */)
+          
 
             const [user, create] = await User.findOrCreate({
                 where:{
@@ -61,11 +56,11 @@ module.exports={
 
 
             let messageWithToken = {
-                from: 'sirblaue@naver.com',
+                from: process.env.EMAIL,
                 to: userId,
                 subject: "이메일인증요청메일입니다.",
 
-                html: ""+`<div><h1>안녕하세요<h1><a href ="http://${host}/confirmEmail/${tokenForSignUp}" ><p>클릭하시면 이메일 인증 페이지로 이동합니다.</p></a> <div>`
+                html: ""+`<div><h1>안녕하세요<h1><a href ="http://${host}/confirmemail/${tokenForSignUp}" ><p>클릭하시면 이메일 인증 페이지로 이동합니다.</p></a> <div>`
 
             }
             //
@@ -151,6 +146,7 @@ module.exports={
 
 
             })
+            console.log(user, "user")
             if(user.dataValues.verified === false){
                 response.status(400).json('이메일 인증하세요')
             }
@@ -160,8 +156,8 @@ module.exports={
                 const token= jwt.sign({
                     _id: userId,
                 },
-                secret,
-                {expiresIn:'30m'}
+                secret/* ,
+                {expiresIn:'7d' }*/
                 )
 
 
@@ -184,18 +180,19 @@ module.exports={
     },
     check : (request, response)=>{
         try{
-        const token = request.headers['x-access-token'] || request.headers.token
+        const token = request.headers['x-access-token']
         let verify = jwt.verify(token, process.env.SECRET);
         verify = verify._id;
-        if(verify){
-            User.findOne({
+        
+            const user =  User.findOne({
                 where:{
                     userId:verify
                 }
-            }
-            ).then(result =>{
-                response.status(200).json('유효함')
             })
+            
+        if(user){
+            response.status(200).json('유효함')
+        
         }else{
             response.status(401).json('need user session')
         }

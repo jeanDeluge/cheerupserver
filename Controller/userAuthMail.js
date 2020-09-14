@@ -67,7 +67,7 @@ module.exports = {
           subject: "비밀번호 변경을 위한 인증요청 메일입니다.",
           html:
             "" +
-            `<div><h1>안녕하세요<h1><a href="http://${host}/resetPassword/${tokenEncrypted}"><p>클릭하시면 비밀번호 변경페이지로 이동합니다. </p></a><div>`,
+            `<div><h1>안녕하세요<h1><a href="http://${host}/mail/resetpassword/?x-access-reset-token=${tokenEncrypted}"><p>클릭하시면 비밀번호 변경페이지로 이동합니다. </p></a><div>`,
         };
         sendPasswordResetMail(messageWithToken);
         response.status(200).json({
@@ -82,7 +82,7 @@ module.exports = {
     }
   },
   resetPassword: async (request, response) => {
-    const tokenreceived = request.headers["x-access-reset-token"];
+    const tokenreceived = request.url.split("=")[1];
     const newPassword = request.body.newPassword;
 
     try {
@@ -123,5 +123,5 @@ module.exports = {
     } catch {
       response.status(402).json({ message: "비밀번호 번경 실패" });
     }
-  },
+  }
 };

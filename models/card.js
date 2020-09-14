@@ -11,16 +11,12 @@ module.exports = (sequelize, DataTypes) => {
       Card.belongsTo(models.User, {
         foreignKey: "user_Id",
         as: "User",
-<<<<<<< HEAD
-        targetKey: "id"
-=======
         targetKey: "id",
       });
       Card.hasMany(models.Comment, {
         foreignKey: "card_id",
         as: "Comment",
         onDelete: "CASCADE",
->>>>>>> 2ff4ceb67223cd7f27c988faf2c9453658132fde
       });
     }
   }
@@ -31,6 +27,7 @@ module.exports = (sequelize, DataTypes) => {
       cheered: DataTypes.INTEGER,
       done: DataTypes.BOOLEAN,
       DLC: DataTypes.STRING,
+      D_day: DataTypes.DATEONLY,
       user_Id: DataTypes.INTEGER,
     },
     {

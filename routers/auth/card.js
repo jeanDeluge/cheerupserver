@@ -8,6 +8,8 @@ router.get("/get", cardController.get);
 
 router.get("/getAll", cardController.getAll);
 
+router.get("/getCardComment", cardController.getCardComment);
+
 router.get("/getUrl", cardController.getUrl);
 
 router.post("/update", cardController.update);

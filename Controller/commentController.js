@@ -37,7 +37,7 @@ module.exports = {
       response.send(404).json("wrong request");
     }
   },
-
+  // GET
   get: async (request, response) => {
     const query = request.query;
     const token = request.headers.authorization;
@@ -69,6 +69,7 @@ module.exports = {
       response.status(403).json("cannot get comments");
     }
   },
+  //UPDATE
   update: async (request, response) => {
     const { card_id, comment_id, text } = request.body;
     //cardid&commentid를 받아서, text를 update
@@ -92,6 +93,7 @@ module.exports = {
       response.status(404).json("comment-Update-Error");
     }
   },
+  //DELETE
   delete: async (request, response) => {
     const query = request.query;
     const { card_id, comment_id } = request.body;
@@ -114,6 +116,7 @@ module.exports = {
       response.status(404).json("삭제실패?");
     }
   },
+  //comment table GET => 로그인한 유저가 작성한 댓글들, join with Card Table.
   getCheer: async (request, response) => {
     const token = request.headers.authorization;
 
@@ -124,7 +127,7 @@ module.exports = {
       const user = await User.findOne({
         where: { userId: _id },
       });
-      console.log(_id);
+
       const comment = await Comment.findAll({
         where: {
           user_id: user.dataValues.id,
@@ -138,11 +141,6 @@ module.exports = {
             as: "Card",
             attributes: ["id", "text"],
           },
-          // {
-          //   model: User,
-          //   as: "User",
-          //   attributes: ["user_id"],
-          // },
         ],
         group: ["card_id"],
       }).then((result) => {
@@ -153,10 +151,36 @@ module.exports = {
       console.log("err", error);
     }
   },
+  //로그인한 유저가 작성한 모든 댓글의 갯수를 카운트
+  getMyComment: async (request, response) => {
+    const token = request.headers.authorization;
+
+    try {
+      const verify = jwt.verify(token, process.env.SECRET);
+      const { _id } = verify;
+
+      const user = await User.findOne({
+        where: { userId: _id },
+      });
+      const comment = await Comment.findAll({
+        where: {
+          user_id: user.dataValues.id,
+        },
+        //로그인한 유저를 참고하여, 커멘트의 user_id 가 같은 것을 모두 카운트 해라
+        attributes: [
+          "user_id",
+          [
+            sequelize.fn("count", Sequelize.col("Comment.user_id")),
+            "Commentcount",
+          ],
+        ],
+      }).then((result) => {
+        response.status(200).json(result);
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  },
 };
 
-//Create
-//Read
-
-//Update
-//Delete
+//Almost DONE - reamain thing is delete comments response FOR client

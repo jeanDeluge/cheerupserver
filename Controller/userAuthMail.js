@@ -1,10 +1,8 @@
-
 const nodemailer = require("nodemailer");
 const { User } = require("../models");
 const { VerifyingToken } = require("../models");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
-
 
 //인증을 위한 토큰 생성하기
 //이메일을 입력하고,
@@ -42,7 +40,6 @@ module.exports = {
         { expiresIn: "7d" }
       ); // **배포시느에ㅡ안전을 위해 한시간으로 설정함
 
-
       const tokenEncrypted = crypto
         .createHash("sha256")
         .update(token)
@@ -58,7 +55,6 @@ module.exports = {
           where: {
             user_Id: userWantPassword.dataValues.id,
           },
-
         }
       );
       if (tokenToTable) {
@@ -125,8 +121,8 @@ module.exports = {
         }
       }
     } catch(e){
+
       response.status(402).json({ message: "비밀번호 번경 실패" });
     }
   }
 };
-=

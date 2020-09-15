@@ -71,7 +71,7 @@ module.exports = {
 
         html:
           "" +
-          `<div><h1>안녕하세요<h1><a href ="http://${host}/mail/confirmemail/?x-access-join-token=${tokenForSignUp}" ><p>클릭하시면 이메일 인증 페이지로 이동합니다.</p></a> <div>`,
+          `<div><h1>안녕하세요<h1><a href ="http://${host}/mail/confirmmail/?x-access-join-token=${tokenForSignUp}" ><p>클릭하시면 이메일 인증 페이지로 이동합니다.</p></a> <div>`,
       };
       //
       //http://localhost:5000/asdjfoaidjfadf
@@ -219,32 +219,28 @@ module.exports = {
       }
     });
   },
-  info: (request, response) => {
+  info: async (request, response) => {
     const { age, gender, interest } = request.body;
     const token = request.headers.authorization;
     try {
       const verify = jwt.verify(token, process.env.SECRET);
       const { _id } = verify;
-      const user = User.findOne({
+      const user = await User.update({
+        age,
+        gender,
+        interest
+      },{
         where: {
           userId: _id,
         },
-      }).then((result) => {
-        if (result) {
-          result.update({
-            age,
-            gender,
-            interest,
-          });
-          console.log(result);
-          response.status(200).json(result);
-        }
-      });
-      console.log(result);
-      response.status(200).json(result);
+      })
+
+      console.log(user);
+      response.status(202).json({message: "입력성공", result: user});
+      
     } catch (error) {
       console.log(error);
-      response.status(404).json("추가정보입력실패");
+      response.status(400).json("추가정보입력실패");
     }
   },
 };

@@ -2,20 +2,16 @@ const { User } = require("../models");
 const { VerifyingToken } = require("../models");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
-const nodemailer = require("nodemailer");
+const sgMail = require("@sendgrid/mail");
 
-function sendJoinMail(mailOptions) {
-  const mailConfig = {
-    service: "Daum",
-    host: "smtp.daum.net",
-    port: 465,
-    auth: {
-      user: process.env.EMAIL,
-      pass: process.env.PASSWORD,
-    },
-  };
-  let transporter = nodemailer.createTransport(mailConfig);
-  transporter.sendMail(mailOptions);
+ const sendJoinMail = async function(message) {
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+  try{
+  await sgMail.send(message)
+  }catch(e){
+    console.log('sendGrid', e);
+
+  }
 }
 
 module.exports = {
@@ -63,12 +59,11 @@ module.exports = {
       // console.log(data)
 
       const host = request.headers.host;
-
+   
       let messageWithToken = {
-        from: process.env.EMAIL,
         to: userId,
+        from: process.env.EMAIL,
         subject: "이메일인증요청메일입니다.",
-
         html:
           "" +
           `<div><h1>안녕하세요<h1><a href ="http://${host}/mail/confirmmail/?x-access-join-token=${tokenForSignUp}" ><p>클릭하시면 이메일 인증 페이지로 이동합니다.</p></a> <div>`,
@@ -80,7 +75,7 @@ module.exports = {
         response.status(403).json({ messasge: "회원이 이미 있음" });
       } else if (isCreatedToken) {
         sendJoinMail(messageWithToken);
-        console.log('send', messageWithToken)
+       // console.log('send', messageWithToken)
         response.status(200).json({
           message: "mail send  mail 인증부탁드립니다.",
           token: token.dataValues.token, //이건 배포시 삭제해야함.

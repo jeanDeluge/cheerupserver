@@ -1,23 +1,14 @@
-const nodemailer = require("nodemailer");
+
 const { User } = require("../models");
 const { VerifyingToken } = require("../models");
-const jwt = require("jsonwebtoken");;
+const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
-//인증을 위한 토큰 생성하기
-//이메일을 입력하고,
+const sgMail = require("@sendgrid/mail");
 
-function sendPasswordResetMail(mailOptions) {
-  const mailConfig = {
-    service: "Daum",
-    host: "smtp.daum.net",
-    port: 465,
-    auth: {
-      user: process.env.EMAIL,
-      pass: process.env.PASSWORD,
-    },
-  };
-  let transporter = nodemailer.createTransport(mailConfig);
-  transporter.sendMail(mailOptions);
+function sendPasswordResetMail(message) {
+ 
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+  sgMail.send(message);
 }
 
 module.exports = {
@@ -61,8 +52,8 @@ module.exports = {
         //Verf yingToken 테이블에 넣어둘것임 : 예전에 회원가입때 썼던 곳
 
         let messageWithToken = {
-          from: process.env.EMAIL,
           to: emailaddress,
+          from: process.env.EMAIL,
           subject: "비밀번호 변경을 위한 인증요청 메일입니다.",
           html:
             "" +
